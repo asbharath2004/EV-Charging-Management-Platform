@@ -1,6 +1,12 @@
 import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api";
+const DEFAULT_API_BASE_URL = "https://ev-charging-backend-ozie.onrender.com";
+const configuredApiBaseUrl =
+  import.meta.env.VITE_API_BASE_URL?.trim() || DEFAULT_API_BASE_URL;
+const normalizedApiBaseUrl = configuredApiBaseUrl.replace(/\/+$/, "");
+const API_BASE_URL = normalizedApiBaseUrl.endsWith("/api")
+  ? normalizedApiBaseUrl
+  : `${normalizedApiBaseUrl}/api`;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -49,7 +55,7 @@ export const getErrorMessage = (error) => {
     }
   }
   if (error.code === "ERR_NETWORK" || !error.response) {
-    return "Unable to connect to server. Please verify the Spring Boot backend is running on http://localhost:8080.";
+    return `Unable to connect to the server at ${API_BASE_URL}. Please verify the backend is running and accessible.`;
   }
   return error.message || "An unexpected error occurred. Please try again.";
 };

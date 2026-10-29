@@ -47,6 +47,24 @@ Repeat for the admin frontend where applicable.
 
 Do not commit database credentials, JWT secrets, access tokens, or private environment files. Configure required values locally before running the application.
 
+### Render production configuration
+
+Set `VITE_API_BASE_URL` in the Render environment for **both** frontend static sites to:
+
+```text
+https://ev-charging-backend-ozie.onrender.com/api
+```
+
+Vite only exposes client-side variables prefixed with `VITE_`; an `API_BASE_URL` variable will not be available to the browser app. The API clients add `/api` when a host-only URL is configured.
+
+On the backend Render service, set `CORS_ALLOWED_ORIGINS` to the exact comma-separated origins of the deployed frontend and admin sites, without trailing slashes, for example:
+
+```text
+https://<frontend-service>.onrender.com,https://<admin-service>.onrender.com
+```
+
+Set these values in Render's service environment settings, not in committed files. Redeploy both frontend sites after changing `VITE_API_BASE_URL`, and redeploy the backend after changing `CORS_ALLOWED_ORIGINS`. Keep `MONGODB_URI` and `JWT_SECRET` configured as Render secrets; never put their values in frontend variables.
+
 ## Hackathon
 
 Submitted to ForgeHacks Online 2026.
